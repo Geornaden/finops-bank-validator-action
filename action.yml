@@ -1,0 +1,40 @@
+name: 'FinOps Bank File & IBAN Pre-Flight Validator'
+description: 'Validate IBAN MOD-97, US ABA MOD-10, NACHA/ABA/BACS/CPA-005 widths & generate compliant SEPA/Peppol/ACH/DATEV files via FinOps Cloud.'
+author: 'Geornaden'
+branding:
+  icon: 'shield'
+  color: 'green'
+inputs:
+  mode:
+    description: 'Action mode: "validate" (offline deterministic checksums & format audit) or "generate" (run FinOps Studio Cloud API).'
+    required: false
+    default: 'validate'
+  file:
+    description: 'Path to bank/payment file or JSON payload (required in validate or generate mode).'
+    required: true
+  tool:
+    description: 'Target FinOps Cloud API when mode=generate: sepa, einvoice, nacha, bai2, datev, aba, pain002, bacs, cpa005.'
+    required: false
+    default: 'sepa'
+  output-file:
+    description: 'Optional file path to save the generated SEPA XML, NACHA .ach, .aba, BACS, CPA-005, or DATEV CSV output.'
+    required: false
+    default: ''
+  apify-token:
+    description: 'Apify API token for mode=generate (includes $5/mo free credits at https://apify.com/finops_studio).'
+    required: false
+    default: ''
+outputs:
+  valid:
+    description: 'Whether all checked IBANs, ABA routing numbers, and file formats passed validation ("true" or "false").'
+  detected-format:
+    description: 'Auto-detected financial file format.'
+  checked-ibans:
+    description: 'Count of unique IBANs mathematically verified via ISO 13616 MOD-97.'
+  checked-abas:
+    description: 'Count of unique valid 9-digit US ABA routing numbers verified via MOD-10.'
+  output-path:
+    description: 'Path where generated output was written (if output-file was specified).'
+runs:
+  using: 'node20'
+  main: 'index.mjs'
